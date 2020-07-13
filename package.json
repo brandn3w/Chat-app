@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "express": "4.17.1",
+    "node-sass": "^4.14.1",
+    "nodemon": "^2.0.4"
+  },
+  "devDependencies": {
+    "yarn": "^1.22.4"
+  },
+  "scripts": {
+    "start": "nodemon server.js",
+    "build": "cd client && yarn install && yarn build",
+    "server": "nodemon server.js",
+    "client": "yarn run start --prefix client",
+    "dev": "concurrently \"yarn run server\" \"yarn run client\""
+  }
+}
