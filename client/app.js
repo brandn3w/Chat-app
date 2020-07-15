@@ -1,17 +1,20 @@
 'use strict';
 {
-  
-const loginForm = document.getElementById('welcome-form');
-const messagesSection = document.getElementById('messages-section');
-const messagesList = document.getElementById('messages-list');
-const addMessageForm = document.getElementById('add-messages-form');
-const userNameInput = document.getElementById('username');
-const messageContentInput = document.getElementById('message-content');
+  const socket = io();
+  socket.on('message', ({ author, content }) => addMessage(author, content))
+
+  socket.on('newUser', (user) => {console.log(user + "user")})
 
 
-let userName = '';
+  const loginForm = document.getElementById('welcome-form');
+  const messagesSection = document.getElementById('messages-section');
+  const messagesList = document.getElementById('messages-list');
+  const addMessageForm = document.getElementById('add-messages-form');
+  const userNameInput = document.getElementById('username');
+  const messageContentInput = document.getElementById('message-content');
 
-socket.on('message', ({ author, content }) => addMessage(author, content))
+
+  let userName = '';
 
   function login(e) {
     e.preventDefault();
@@ -22,6 +25,7 @@ socket.on('message', ({ author, content }) => addMessage(author, content))
       userName = userNameInput.value;
       loginForm.classList.remove('show');
       messagesSection.classList.add('show');
+      socket.emit('join', userName)
     }
   }
 
@@ -39,32 +43,25 @@ socket.on('message', ({ author, content }) => addMessage(author, content))
     messagesList.appendChild(message);
   }
 
-  function sendMessage(e){
+  function sendMessage(e) {
     e.preventDefault();
- let messageContent = messageContentInput.value;
- if(!messageContent.length){
-   alert('this field cannot be empty')
- } else {
-  addMessage(userName, messageContent);
-  socket.emit('message', { author: userName, content: messageContent })
-  messageContentInput.value = '';
-}
-
-    if (!messageContentInput) {
-      alert('this field caanot be empty');
-      return;
+    let messageContent = messageContentInput.value;
+    if (!messageContent.length) {
+      alert('this field cannot be empty')
     } else {
-      addMessage(userName, messageContentInput.value);
+      addMessage(userName, messageContent);
+      socket.emit('message', { author: userName, content: messageContent })
       messageContentInput.value = '';
     }
+
   }
 
-  loginForm.addEventListener('sumbit', e => {
+  loginForm.addEventListener('submit', e => {
     login(e);
   });
 
   addMessageForm.addEventListener('submit', e => {
-    sendMessage()
+    sendMessage(e)
   });
 
 
